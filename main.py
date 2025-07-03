@@ -3128,6 +3128,8 @@ def dclick_in_listwidget():
         r = text[sz + 2:sz1]
         bd = text[sz1 + 2:sz2]
         znak = bd.find(".")
+        # ==== поиск игрока в базе данных и заполнение полей отчество, разряд и тренер
+        player_full = find_player_in_table_players_full(name, bd)
         # ==== проверка правильность даты для участия в турнире
         check_age_player(znak, bd)
         # ==== переводит строку с датой из базы даннных в строку к обычному виду
@@ -3157,6 +3159,14 @@ def dclick_in_listwidget():
     else:  # идет заполнение поля "тренер" из listWidget
         my_win.lineEdit_coach.setText(text)
         my_win.listWidget.clear()
+
+
+def find_player_in_table_players_full(name, bd):
+    """поиск игрока в базе данных, если он есть извлекает оттуда отчество, разряд и тренеров"""
+    pf = Players_full.select().order_by(Players_full.player)
+    count = len(pf)
+    return pf
+
 
 
 def load_combobox_filter_final():
@@ -17454,15 +17464,21 @@ def add_double_player_to_list():
 #     myconn = pymysql.connect(host = "localhost", user = "root", passwd = "db_pass", database = "mysql_db") 
 #     # создать таблицу
     
-#     class Patronymic(BaseModel):
-#         patronymic = CharField(45)
-#         sex = CharField(45)
-
+#     class Players_full(BaseModel):
+#         player = CharField(50)    
+#         bday = DateField()
+#         rank = IntegerField()
+#         city = CharField()
+#         region = CharField()
+#         razryad = CharField()
+#         coach_id = ForeignKeyField(Coach)
+#         patronymic_id = ForeignKeyField(Patronymic)
+    
 #         class Meta:
-#             db_table = "patronymic"
-#             order_by = "patronymic"
-#     # db.connect()
-#     db.create_tables([Patronymic])
+#             db_table = "players_full"
+#             order_by = "player"
+
+#     db.create_tables([Players_full])
 #     db.close()
 
  

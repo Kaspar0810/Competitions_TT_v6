@@ -134,6 +134,20 @@ class Player(BaseModel):
         db_table = "players"
         order_by = "rank"
 
+class Players_full(BaseModel):
+        player = CharField(50)    
+        bday = DateField()
+        rank = IntegerField()
+        city = CharField()
+        region = CharField()
+        razryad = CharField()
+        coach_id = ForeignKeyField(Coach)
+        patronymic_id = ForeignKeyField(Patronymic)
+    
+        class Meta:
+            db_table = "players_full"
+            order_by = "player"
+
 class System(BaseModel):
     title_id = ForeignKeyField(Title)
     total_athletes = IntegerField()
