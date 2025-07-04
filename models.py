@@ -137,7 +137,6 @@ class Player(BaseModel):
 class Players_full(BaseModel):
         player = CharField(50)    
         bday = DateField()
-        rank = IntegerField()
         city = CharField()
         region = CharField()
         razryad = CharField()

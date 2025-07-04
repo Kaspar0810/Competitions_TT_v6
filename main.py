@@ -2345,7 +2345,7 @@ def fill_table(player_list):
     # start = time.time()
     model = MyTableModel(data)
     tb = my_win.tabWidget.currentIndex()
-    
+
     player_selected = player_list.dicts().execute()
     
     row_count = len(player_selected)  # кол-во строк в таблице
@@ -2852,6 +2852,18 @@ def add_player():
     ms = "" # записвыает место в базу как пустое
     idc = Coach.get(Coach.coach == ch) # получает id тренера
     idp = Patronymic.get(Patronymic.patronymic == otc)
+    # === вставляет в таблицу player_full =========
+    mark = pl.find(' ')
+    fam = pl[:mark]
+    name = pl[mark + 1:]
+    bd =str(bd)
+    day = bd[:2]
+    month = bd[3:5]
+    year = bd[6:]
+    bd_new = f"{year}-{month}-{day}"
+    flag_player_full = find_player_in_table_players_full(fam, name, ci=ct, bd=bd_new)
+    if flag_player_full is None:
+        player_full = Players_full(player=pl, bday=bd_new, city=ct, region=rg, razryad=rz, coach_id=idc, patronymic_id=idp).save()
     # ==== определяет завявка предварительная или нет
     title = Title.select().where(Title.id == title_id()).get()
     data_start = title.data_start
@@ -3127,20 +3139,31 @@ def dclick_in_listwidget():
         name = name.capitalize()
         r = text[sz + 2:sz1]
         bd = text[sz1 + 2:sz2]
-        znak = bd.find(".")
-        # ==== поиск игрока в базе данных и заполнение полей отчество, разряд и тренер
-        player_full = find_player_in_table_players_full(name, bd)
-        # ==== проверка правильность даты для участия в турнире
+        znak = bd.find(".")       
         check_age_player(znak, bd)
+        ci = text[sz2 + 2:ds] # город
+        # ==== поиск игрока в базе данных и заполнение полей отчество, разряд и тренер
+        player_full = find_player_in_table_players_full(fam, name, ci, bd)
         # ==== переводит строку с датой из базы даннных в строку к обычному виду
         if znak == -1:
-            bd = format_date_for_view(str_date=bd)
-        #=====
-        ci = text[sz2 + 2:ds] # город
+            bd = format_date_for_view(str_date=bd)  
+        # ==== проверка правильность даты для участия в турнире
         my_win.lineEdit_Family_name.setText(f"{fam} {name}")
         my_win.lineEdit_bday.setText(bd)
         my_win.lineEdit_R.setText(r)
         my_win.lineEdit_city_list.setText(ci)
+        # =========== всатвляет данные если они есть в базе =============
+        if player_full is not None:
+            coaches = Coach.get(Coach.id == player_full[0])
+            coach = coaches.coach
+            my_win.lineEdit_coach.setText(coach)
+            my_win.comboBox_razryad.setCurrentText(player_full[1])
+            titles = Title.get(Title.id == title_id())
+            flag_otc = titles.otchestvo
+            if flag_otc == 1:
+                patr = Patronymic.get(Patronymic.id == player_full[2])
+                otc = patr.patronymic
+                my_win.lineEdit_otchestvo.setText(otc)
          # ======= проверка на рейтинг ====
         if txt_tmp == "Поиск в январском рейтинге.":
             pl = fam_name
@@ -3161,11 +3184,24 @@ def dclick_in_listwidget():
         my_win.listWidget.clear()
 
 
-def find_player_in_table_players_full(name, bd):
+def find_player_in_table_players_full(fam, name, ci, bd):
     """поиск игрока в базе данных, если он есть извлекает оттуда отчество, разряд и тренеров"""
-    pf = Players_full.select().order_by(Players_full.player)
-    count = len(pf)
-    return pf
+    old_data = []
+    p_full = Players_full.select().order_by(Players_full.player)
+    fam_name = f"{fam} {name}"
+    for pf in p_full:
+        name_full = pf.player
+        bd_full = str(pf.bday)
+        city_full = pf.city
+        if (fam_name == name_full and bd == bd_full):
+            if ci == city_full:
+                coach_full = pf.coach_id
+                raz_full = pf.razryad
+                patronymic_full = pf.patronymic_id
+                old_data = [coach_full, raz_full, patronymic_full]
+                return old_data
+
+  
 
 
 
