@@ -5953,8 +5953,8 @@ def delete_player():
     if flag_otc == 1:
         patronymic_id = player.patronymic_id
     else:
-        patronymic_id = ""
-
+        # patronymic_id = ""
+        patronymic_id = 0
     question = msgBox.question(my_win, "", f"Вы действительно хотите удалить\n"
                                          f" {player_del} город {player_city_del}?",
                              msgBox.Ok, msgBox.Cancel)
@@ -5963,91 +5963,93 @@ def delete_player():
         if system_flag is True:
             count = len(system)
         # ============ корректрует запись в таблице -system- после удаления игрока
-        if count == 1: # значит система состоит из одной таблицы
-            sys = system.id
-            athlet = sys.total_athletes
-            kg = sys.total_group
-        else:
-            for sys in system:
-                stage = sys.stage
-                if stage == "Предварительный":
-                    id_system = system_id(stage)
-                    athlet = sys.total_athletes # кол-во участников
-                    athlet -= 1
-                    kg = sys.total_group # кол-во групп
-                    e1 = athlet % int(kg)
-                    # если количество участников равно делится на группы (кол-во групп)
-                    p = athlet // int(kg)
-                    g1 = int(kg) - e1  # кол-во групп, где наименьшее кол-во спортсменов
-                    g2 = int(p + 1)  # кол-во человек в группе с наибольшим их количеством
-                    if e1 == 0:  # то в группах равное количество человек -e1-
-                        stroka_kol_group = f"{kg} группы по {str(p)} чел."
-                    else:
-                        stroka_kol_group = f"{str(g1)} групп(а) по {str(p)} чел. и {str(e1)} групп(а) по {str(g2)} чел."
-                    System.update(total_athletes=athlet, label_string=stroka_kol_group).where(System.id == id_system).execute()
-            # fin = "Предварительный"
-                check_flag = check_choice(stage)
-                if check_flag is True:
-                    question = msgBox.information(my_win, "", f"Уже была произведена жеребьевка!\n"
-                                                    f" {player_del} город {player_city_del}\n"
-                                                    "будет удален(а) из посева.",
-                                        msgBox.Ok)
-                    # id_system = system_id(stage)
-                    # sys = system.select().where(System.stage == "Предварительный").get()
-                    # system_id = sys.id # id системы -Предварительного этапа-
-                    
-                    choices = Choice.delete().where(Choice.player_choice_id == player_id)
-                    choices.execute()
-                    game_lists = game_list.select().where(Game_list.player_group_id == player_id).get()
-                    posev = game_lists.rank_num_player
-                    number_group = game_lists.number_group
-                    # === изменяет номера посева, если удаляемый игрок не в последний посев ==
-                    g_list = game_list.select().where((Game_list.system_id == id_system) & 
-                                                    (Game_list.number_group == number_group))
-                    for k in g_list:
-                        gl_id = k.id
-                        ps = k.rank_num_player # посев игрока
-                        if posev < ps:
-                            rank_in_group = ps - 1
-                            gl = Game_list.update(rank_num_player=rank_in_group).where(Game_list.id == gl_id)
-                            gl.execute()
-                        elif posev == ps:
-                    # === удаляет игрока из Game_list ===
-                            gl = Game_list.delete().where(Game_list.id == gl_id)
-                            gl.execute()
-                    # ==== заменяет туры (удаляет встречи с удаленным игроком)
-                    result_game = result.select().where((Result.system_id == id_system) & 
-                                                            (Result.number_group == number_group))
-                    fam_city_del = f"{player_del}/{player_city_del}"
-                    for k in result_game:
-                        pl1 = k.player1
-                        pl2 = k.player2
-                        if pl1 == fam_city_del or pl2 == fam_city_del:
-                            res = Result.delete().where(Result.id == k)
-                            res.execute()
-                    for k in result_game:
-                        tour = k.tours
-                        znak = tour.find("-")
-                        p1 = int(tour[:znak])  # игрок под номером в группе
-                        p2 = int(tour[znak + 1:])  # игрок под номером в группе
-                        if p1 > posev and p2 > posev:
-                            p1 -= 1
-                            p2 -= 1
-                        elif p1 > posev:
-                            p1 -= 1
-                        elif p2 > posev:
-                            p2 -= 1
-                        new_tour = f"{p1}-{p2}"
-                        res = Result.update(tours=new_tour).where(Result.id == k)
-                        res.execute()            
-                else: # если система еще не создана
-                    # записывает в таблицу -Delete player-
-                    birthday_mod = format_date_for_db(str_date=birthday)
-                    with db: 
-                        del_player = Delete_player(bday=birthday_mod, rank=rank, city=player_city_del,
-                                                    region=region, razryad=razryad, coach_id=coach_id, full_name=full_name,
-                                                    player=player_del, title_id=title_id(), pay_rejting=pay_R, comment=comment, patronymic_id=patronymic_id).save()
- 
+            if count == 1: # значит система состоит из одной таблицы
+                sys = system.id
+                athlet = sys.total_athletes
+                kg = sys.total_group
+            else:
+                for sys in system:
+                    stage = sys.stage
+                    if stage == "Предварительный":
+                        id_system = system_id(stage)
+                        athlet = sys.total_athletes # кол-во участников
+                        athlet -= 1
+                        kg = sys.total_group # кол-во групп
+                        e1 = athlet % int(kg)
+                        # если количество участников равно делится на группы (кол-во групп)
+                        p = athlet // int(kg)
+                        g1 = int(kg) - e1  # кол-во групп, где наименьшее кол-во спортсменов
+                        g2 = int(p + 1)  # кол-во человек в группе с наибольшим их количеством
+                        if e1 == 0:  # то в группах равное количество человек -e1-
+                            stroka_kol_group = f"{kg} группы по {str(p)} чел."
+                        else:
+                            stroka_kol_group = f"{str(g1)} групп(а) по {str(p)} чел. и {str(e1)} групп(а) по {str(g2)} чел."
+                        System.update(total_athletes=athlet, label_string=stroka_kol_group).where(System.id == id_system).execute()
+                    check_flag = check_choice(stage)
+                    if check_flag is True:
+                        question = msgBox.information(my_win, "", f"Уже была произведена жеребьевка!\n"
+                                                        f" {player_del} город {player_city_del}\n"
+                                                        "будет удален(а) из посева.",
+                                            msgBox.Ok)
+                        
+                        choices = Choice.delete().where(Choice.player_choice_id == player_id)
+                        choices.execute()
+                        game_lists = game_list.select().where(Game_list.player_group_id == player_id).get()
+                        posev = game_lists.rank_num_player
+                        number_group = game_lists.number_group
+                        # === изменяет номера посева, если удаляемый игрок не в последний посев ==
+                        g_list = game_list.select().where((Game_list.system_id == id_system) & 
+                                                        (Game_list.number_group == number_group))
+                        for k in g_list:
+                            gl_id = k.id
+                            ps = k.rank_num_player # посев игрока
+                            if posev < ps:
+                                rank_in_group = ps - 1
+                                gl = Game_list.update(rank_num_player=rank_in_group).where(Game_list.id == gl_id)
+                                gl.execute()
+                            elif posev == ps:
+                        # === удаляет игрока из Game_list ===
+                                gl = Game_list.delete().where(Game_list.id == gl_id)
+                                gl.execute()
+                        # ==== заменяет туры (удаляет встречи с удаленным игроком)
+                        result_game = result.select().where((Result.system_id == id_system) & 
+                                                                (Result.number_group == number_group))
+                        fam_city_del = f"{player_del}/{player_city_del}"
+                        for k in result_game:
+                            pl1 = k.player1
+                            pl2 = k.player2
+                            if pl1 == fam_city_del or pl2 == fam_city_del:
+                                res = Result.delete().where(Result.id == k)
+                                res.execute()
+                        for k in result_game:
+                            tour = k.tours
+                            znak = tour.find("-")
+                            p1 = int(tour[:znak])  # игрок под номером в группе
+                            p2 = int(tour[znak + 1:])  # игрок под номером в группе
+                            if p1 > posev and p2 > posev:
+                                p1 -= 1
+                                p2 -= 1
+                            elif p1 > posev:
+                                p1 -= 1
+                            elif p2 > posev:
+                                p2 -= 1
+                            new_tour = f"{p1}-{p2}"
+                            res = Result.update(tours=new_tour).where(Result.id == k)
+                            res.execute()                
+        # записывает в таблицу -Delete player-
+        birthday_mod = format_date_for_db(str_date=birthday)
+        with db: 
+            del_player   = Delete_player(bday=birthday_mod, rank=rank, city=player_city_del,
+                                        region=region, razryad=razryad, coach_id=coach_id, full_name=full_name,
+                                        player=player_del, title_id=title_id(), pay_rejting=pay_R, comment=comment, patronymic_id=patronymic_id).save()
+            
+        if system_flag is True:  # удаляет игрока из таблицы -Choice-, если была создана система 
+            choices = Choice.select().where((Choice.title_id == title_id()) & (Choice.player_choice_id == player_id))
+            count = len(choices)
+            if count == 1: # если -0-, значит удалили после жеребьевки
+                id_choice = choices.id
+                pl_choice_del = Choice.get(Choice.id == id_choice)
+                pl_choice_del.delete_instance()     
         pl_del = Player.get(Player.id == player_id)
         pl_del.delete_instance() # удаляет игрока из таблицы -PLayer-
 
@@ -6171,7 +6173,7 @@ def filter_player_list(sender):
         city = my_win.comboBox_fltr_city.currentText()
         coach = my_win.comboBox_fltr_coach.currentText()
         if region != "" and city != "":
-            # player_list = player.select().where(Player.region == region)
+
             player_list = player.select().where((Player.region == region)  & (Player.city == city))
         elif region == "" and city != "":
             player_list = player.select().where(Player.city == city)
@@ -6191,8 +6193,6 @@ def filter_player_list(sender):
             my_win.Button_app.setEnabled(True)
             if region != "":
                 player_list = player.select().where((Player.application == "предварительная") & (Player.region == region))
-            # elif city != "":
-            #     player_list = player.select().where((Player.application == "предварительная") & (Player.city == city))
             else:
                 player_list = player.select().where(Player.application == "предварительная")
             count = len(player_list)
@@ -6353,18 +6353,6 @@ def enter_total_score():
     elif sender == my_win.lineEdit_pl2_score_total:
         mark = my_win.lineEdit_pl2_score_total.text()
         flag = 1 
-    # elif sender == my_win.lineEdit_pl1_score_total_pf:
-    #     mark = my_win.lineEdit_pl1_score_total_pf.text()
-    #     flag = 0
-    # elif sender == my_win.lineEdit_pl2_score_total_pf:
-    #     mark = my_win.lineEdit_pl2_score_total_pf.text()
-    #     flag = 1  
-    # elif sender == my_win.lineEdit_pl1_score_total_fin:
-    #     mark = my_win.lineEdit_pl1_score_total_fin.text()
-    #     flag = 0
-    # elif sender == my_win.lineEdit_pl2_score_total_fin:
-    #     mark = my_win.lineEdit_pl2_score_total_fin.text()
-        # flag = 1  
     if mark != "":  
         mark = int(mark)
         mistake = check_input_total_score(mark, flag)
@@ -6461,7 +6449,6 @@ def focus():
         mark_list[mark_index + 1].setFocus()
  
 
-
 def control_mark_in_score(mark, sf):
     """проверка ввода счета в ячейку """
     msgBox = QMessageBox
@@ -6492,6 +6479,7 @@ def control_mark_in_score(mark, sf):
                         return flag_mistake
                 flag_mistake = False
                 return flag_mistake 
+
 
 def score_in_game():
     """считает общий счет в партиях"""
@@ -6795,7 +6783,7 @@ def enter_score(none_player=0):
         result.score_loser = ts_loser
         result.save()
     #  == попытка удалить встречи с игроками задействованных в редактировани счета по сетке
-    if flag_edit_match is not None:
+    if flag_edit_match is not None and type == "сетка":
         player_match = []
         player_match = [winner, loser] # список игроков редактируемом матче
         id_system = system_id(stage)
