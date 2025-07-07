@@ -8674,8 +8674,8 @@ def choice_setka_automat(fin, flag, count_exit):
             posev = posev_3
         elif n == 3:
             posev = posev_4
-          # если ручная жеребьевка то обьединяет все посевы
-        if flag == 3:
+          
+        if flag == 3: # если ручная жеребьевка то обьединяет все посевы
             if count_exit == 1:
                 posev = posev_1
             elif count_exit == 2:
@@ -8690,16 +8690,12 @@ def choice_setka_automat(fin, flag, count_exit):
         for i in range(0, count_posev):  # список посева, разделеный на отдельные посевы
             if flag_stop_manual_choice == 1: # выход из цикла если окончена ручная жеребьевка
                 break
-            #== вариант с одним список ==
-            # sev = posev
 
             current_region_posev.clear()
             sev_tmp = posev[i].copy()
             sev = sev_tmp.copy()
             sev_tmp.clear()
             count = len(posev[i]) # всего количество номеров в посеве
-            # if del_num == 1 and n == count_exit - 1: 
-            # if del_num == 1 and i == end_posev - 1: 
             if del_num == 1 and i == count_posev - 1:                    
                 for h in free_num:
                     sev.remove(h)
@@ -8748,32 +8744,26 @@ def choice_setka_automat(fin, flag, count_exit):
                                 possible_number = {k:v for k,v in sorted(possible_number.items(), key=lambda x:len(x[1]))}
                                 num_posev = list(possible_number.keys())
                             # ============== проба получить возможные варианты посева
-                            variant = posev_variant(possible_number, sev) 
-                            #     ====================================   
-                            l = list(possible_number.keys())[0]
-                            num_set = possible_number[l] # номера куда можно сеять
+                            flag_new = 0
+                            variant_poseva = posev_variant(possible_number, sev)
+                            choice_dict = variant_poseva[0]
                             # === выбор ручная или автомат ====
                             if flag == 1: # автоматичекая
-                                if len(num_set) == 0:
-                                    result = msgBox.information(my_win,"Уведомление", "Автоматическая жеребьевка не получилась.\n"
-                                    "Если хотите повторите снова.\nНажмите -RETRY-\n"
-                                    "Если хотите изменить значение мультирегиональность\nНажмите -OK-\n"
-                                    "Если отменить жеребьевку\nНажмите -Cancel-", msgBox.Retry| msgBox.Ok| msgBox.Cancel)
-                                    if result == msgBox.Retry:
-                                        flag = selection_of_the_draw_mode() # выбор ручная или автоматическая жеребьевка
-                                        choice_setka_automat(fin, flag, count_exit)
-                                    elif result == msgBox.No:
-                                        Title.update(multiregion=0).where(Title.id == title_id()).execute()
-                                    elif result == msgBox.Cancel:
-                                        return
-                                    sorted_tuple = sorted(num_id_player.items(), key=lambda x: x[0])
-                                    dict(sorted_tuple)                                    
-                                    player_choice_in_setka(fin)
-                                    step = 0
-                                elif len(num_set) != 1: # есть выбор из номеров случайно
-                                    num_set = random_generator(num_set)
-                                elif len(num_set) == 1: # остался только один номер
-                                    num_set = num_set[0]
+                                count = len(choice_dict) # сколько номеров сеятся
+                                for j in choice_dict.keys():
+                                    num_set = choice_dict[j] # номера куда можно сеять
+                                    id_player = full_posev[l][0]
+                                    region = full_posev[l][2]
+                                    gr = full_posev[l][3]  
+                                    id_region = [id_player, region, gr]
+                                    num_id_player[num_set] = id_region # словарь номера в сетке - регион
+
+                                    del possible_number[j] # удаляет из словаря возможных номеров посеянный порядковый номер
+                                    del current_region_posev[j] # удаляет из словаря текущий посеянный регион
+                                    if num_set in sev: # проверяет посеянный номер в посеве
+                                        sev.remove(num_set)  # удаляет посеянный номер из всех номеров этого посева
+                                    l += 1
+                                flag_new = 1
                             elif flag == 2: # полуавтомат
                                 my_win.tableView.setGeometry(QtCore.QRect(260, 241, 841, 540))
                                 player_list = []
@@ -8899,7 +8889,7 @@ def choice_setka_automat(fin, flag, count_exit):
                                         # if end == 0 or real_all_player_in_final == (len(num_id_player) - len(free_num)):
                                             flag_stop_manual_choice = 1
                                             step = 100
-                if flag_stop_manual_choice == 0:                      
+                if flag_stop_manual_choice == 0 and flag_new == 0:                      
                     id_player = full_posev[l][0]
                     region = full_posev[l][2]
                     gr = full_posev[l][3]  
@@ -8968,29 +8958,38 @@ def choice_setka_automat(fin, flag, count_exit):
 
 def posev_variant(possible_number, sev):
     """определяет возможные варианты посева"""
-    v = 0
     all_var = {}
     variant = {}
+    variant_tmp_list = []
+    sev_all = []
     sev_num_list = []
-    count = len(possible_number)
-    while v >= 0:
+    count = len(possible_number) # количество ноеров в посеве
+    # # ============
+    for i in permutations(sev, count):  # получает список всех вариантов жеребьевки
+        i = list(i)
+        sev_all.append(i)
+    count_sev = len(sev_all)
+
+    for j in range(0, count_sev):
+        v = 0
+        one_variant = sev_all[j]
         for p in possible_number.keys():
-            var_list = set(possible_number[p])
-            count_in_list = len(var_list)
-            for k in range(0, count_in_list):
-                set1 = set(var_list)
-                set2 = set(sev_num_list)
-                set1.difference_update(set2)
-                without_sev_list = list(set1)
-                n = without_sev_list[k]
-                variant[p] = n
-                sev_num_list.append(n)
-                break
-        all_var[v] = variant
-        v += 1
-
-           
-
+            num = one_variant[v]
+            possible_num = possible_number[p] # возможные номера посева у региона
+            if num in possible_num:
+                variant[p] = one_variant[v]
+                v += 1
+        variant_tmp_list.append(variant.copy())
+        sev_num_list = variant_tmp_list.copy() 
+        variant_tmp_list.clear()
+        r = len(sev_num_list[0])
+        if count == r: # оставляет только рабочие варианты
+            all_var[j] = sev_num_list
+        # выбирает случайнйю компбинация посева
+    key_list = list(all_var.keys())
+    numbers_poseva = random.choice(key_list)
+    choice_dict = all_var[numbers_poseva]
+    return choice_dict      
 
 
 def sort_region(current_region_posev):
