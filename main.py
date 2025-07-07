@@ -8561,6 +8561,8 @@ def choice_setka_automat(fin, flag, count_exit):
     free_num = []
     real_all_player_in_final = []
 
+    flag_new = 0
+
     nums = rank_mesto_out_in_group_or_semifinal_to_final(fin) # получение списка номеров мест, выходящих в финал, суперфинал
 
     n = 0  
@@ -8708,7 +8710,7 @@ def choice_setka_automat(fin, flag, count_exit):
                     num_set = sev[w] # номер в сетке на который идет сев
                     count_sev = len(sev) # количество номеров в посеве
                 else: # посев остальных номеров
-                    num_set = sev[0] # проверить
+                    # num_set = sev[0] # проверить
                     # if len(posev[i]) > count_player_in_final and count_exit > 1:
                     if count > count_player_in_final and count_exit > 1:
                         count_sev = count_player_in_final
@@ -8744,7 +8746,7 @@ def choice_setka_automat(fin, flag, count_exit):
                                 possible_number = {k:v for k,v in sorted(possible_number.items(), key=lambda x:len(x[1]))}
                                 num_posev = list(possible_number.keys())
                             # ============== проба получить возможные варианты посева
-                            flag_new = 0
+                            # flag_new = 0
                             variant_poseva = posev_variant(possible_number, sev)
                             choice_dict = variant_poseva[0]
                             # === выбор ручная или автомат ====
@@ -8762,6 +8764,8 @@ def choice_setka_automat(fin, flag, count_exit):
                                     del current_region_posev[j] # удаляет из словаря текущий посеянный регион
                                     if num_set in sev: # проверяет посеянный номер в посеве
                                         sev.remove(num_set)  # удаляет посеянный номер из всех номеров этого посева
+                                    num_posev.remove(l)
+                                    number_posev.remove(l)
                                     l += 1
                                 flag_new = 1
                             elif flag == 2: # полуавтомат
@@ -8889,12 +8893,13 @@ def choice_setka_automat(fin, flag, count_exit):
                                         # if end == 0 or real_all_player_in_final == (len(num_id_player) - len(free_num)):
                                             flag_stop_manual_choice = 1
                                             step = 100
-                if flag_stop_manual_choice == 0 and flag_new == 0:                      
-                    id_player = full_posev[l][0]
-                    region = full_posev[l][2]
-                    gr = full_posev[l][3]  
-                    id_region = [id_player, region, gr]
-                    num_id_player[num_set] = id_region # словарь номера в сетке - регион
+                if flag_stop_manual_choice == 0:
+                    if flag_new == 0:                      
+                        id_player = full_posev[l][0]
+                        region = full_posev[l][2]
+                        gr = full_posev[l][3]  
+                        id_region = [id_player, region, gr]
+                        num_id_player[num_set] = id_region # словарь номера в сетке - регион
                     # ======== модуль удаления посеянных номеров =========
                     if count_sev > 1:
                         c = len(current_region_posev)
@@ -8917,7 +8922,7 @@ def choice_setka_automat(fin, flag, count_exit):
                         sev.clear()
                         possible_number.clear()
                     number_posev.remove(l)
-                    if i != 0:
+                    if i != 0 and flag == 0:
                         num_posev.remove(l)
 
                     sp = 100 / (real_all_player_in_final)
@@ -8963,7 +8968,7 @@ def posev_variant(possible_number, sev):
     variant_tmp_list = []
     sev_all = []
     sev_num_list = []
-    count = len(possible_number) # количество ноеров в посеве
+    count = len(possible_number) # количество номеров в посеве
     # # ============
     for i in permutations(sev, count):  # получает список всех вариантов жеребьевки
         i = list(i)
