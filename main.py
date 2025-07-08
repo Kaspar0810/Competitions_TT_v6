@@ -304,6 +304,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._connectActions()
 
         self.menuBar()
+        # centralWidget = QMainWindow()
+        Button_turnir_1 = QPushButton("Proba", self) # (в каком виджете размещена)
+        Button_turnir_1.resize(40, 10) # размеры кнопки (длина 120, ширина 50)
+        Button_turnir_1.move(10, 5) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+        font = QFont('Times New Roman', 8)
+        Button_turnir_1.setFont(font)
+        # Button_turnir_1.setText("Proba")
+ 
+    
+        Button_turnir_1.setFlat(True)
+        Button_turnir_1.show()
+        # Button_turnir_1.clicked.connect(view)
 
         self.Button_title_made.setEnabled(False)
         self.Button_system_made.setEnabled(False)
@@ -1070,7 +1082,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 ['Breeze', 'Oxygen', 'QtCurve', 'Windows', 'Fusion']
 app = QApplication(sys.argv)
 my_win = MainWindow()
-app.setStyle('Windows')
+app.setStyle('Fusion')
 my_win.setWindowTitle("Соревнования по настольному теннису")
 my_win.setWindowIcon(QIcon("CTT.png"))
 # my_win.resize(1390, 804)
@@ -3417,7 +3429,7 @@ def page():
         my_win.resize(1110, 750)
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 290, 841, 411)) # (точка слева, точка сверху, ширина, высота)
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 841, 285))
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
         my_win.comboBox_referee.setPlaceholderText("Введите фамилию судьи")
         my_win.comboBox_referee.setCurrentIndex(-1)
         my_win.comboBox_referee.setEditable(True)
@@ -3434,7 +3446,7 @@ def page():
         my_win.resize(1110, 750)
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 225, 841, 473))
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 841, 221))
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
         load_coach_to_combo()
         load_comboBox_filter()
         region()
@@ -3484,7 +3496,7 @@ def page():
         my_win.resize(1110, 750)
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 318, 841, 384))
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 841, 320))
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
         my_win.checkBox_repeat_regions.setChecked(False)
     
         my_win.tableView.setEditTriggers(QAbstractItemView.NoEditTriggers) # запрет редактирования таблицы
@@ -3740,7 +3752,7 @@ def page():
 
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 1000, 190))
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 195, 1000, 502)) # устанавливает tabWidget_2
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
  
         if tb_etap == 0: # подвкладка -Группы-
             stage = "Предварительный"
@@ -3780,7 +3792,7 @@ def page():
         tab_etap()
     elif tb == 4: # парный разряд
         my_win.resize(1110, 750)
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 841, 250))
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 255, 841, 470)) # устанавливает tabWidget_2
         my_win.groupBox_match_double.setEnabled(True)
@@ -3790,7 +3802,7 @@ def page():
         my_win.resize(1110, 750)
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 75, 841, 622))
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 841, 71))
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
         my_win.comboBox_choice_R.clear()
         my_win.comboBox_filter_date_in_R.clear()
         rejting_month = ["За текуший месяц", "За январь месяц"]
@@ -3803,7 +3815,7 @@ def page():
         my_win.tableWidget.setGeometry(QtCore.QRect(260, 250, 841, 400))
         my_win.tabWidget.setGeometry(QtCore.QRect(260, 0, 841, 248))
         my_win.tabWidget_2.setGeometry(QtCore.QRect(260, 250, 841, 450))
-        my_win.toolBox.setGeometry(QtCore.QRect(10, 10, 243, 689))
+        my_win.toolBox.setGeometry(QtCore.QRect(10, 40, 243, 659))
         my_win.Button_made_page_pdf.setEnabled(False)
         my_win.Button_up.setEnabled(False)
         my_win.Button_down.setEnabled(False)
@@ -8069,7 +8081,7 @@ def rank_mesto_out_in_group_or_semifinal_to_final(fin):
     return nums
 
 
-def _choice_setka_automat(fin, flag, count_exit):
+def choice_setka_automat(fin, flag, count_exit):
     """автоматическая жеребьевка сетки, fin - финал, count_exit - сколько выходят в финал
     flag - флаг вида жеребьевки ручная или автомат""" 
     msgBox = QMessageBox 
@@ -8182,8 +8194,8 @@ def _choice_setka_automat(fin, flag, count_exit):
                     group = posevs.group
                     mesto_group = posevs.mesto_group
                 elif stage_exit == "1-й полуфинал" or stage_exit == "2-й полуфинал":
-                    group = posevs.sf_group
-                    mesto_group = posevs.mesto_semi_final
+                    group = posevs.sf_group # номер группы ПФ
+                    mesto_group = posevs.mesto_semi_final # место в группе (ПФ)
                 ind = group.find(' ')
                 group_number = int(group[:ind]) # номер группы
             else:
@@ -8213,13 +8225,14 @@ def _choice_setka_automat(fin, flag, count_exit):
             full_posev.sort(key=lambda k: k[6], reverse=True) # сортировка списка участников по рейтингу
    
 
-        for k in full_posev:
+        for k in full_posev: # цикл по списку игроков
             k.pop(3)
             k.pop(6)
         # ======== начало жеребьевки =========
         end = player_net // count_exit if flag == 1 else count_player_in_final
-        number_posev = [i for i in range(0, end)] # генератор списка
+        number_posev = [i for i in range(0, end)] # генератор списка номеров посева
 
+        # присваивает posev список списков, разбитый на отдельные подпосевы
         if n == 0:
             posev = posev_1
         elif n == 1:
@@ -8246,9 +8259,14 @@ def _choice_setka_automat(fin, flag, count_exit):
                 break
             current_region_posev.clear()
             sev_tmp = posev[i].copy()
-            sev = sev_tmp.copy()
+            sev = sev_tmp.copy() # список в отдельном подпосеве
             sev_tmp.clear()
             count = len(posev[i]) # всего количество номеров в посеве
+            if del_num == 1 and i == count_posev - 1:                    
+                for h in free_num:
+                    sev.remove(h)
+                free_seats = len(free_num) # сколько свободных мест в сетке
+                count = len(posev[i]) - free_seats
             # if del_num == 1 and n == count_exit - 1: 
             # if del_num == 1 and i == end_posev - 1:                    
             #     for h in free_num:
@@ -8512,7 +8530,7 @@ def _choice_setka_automat(fin, flag, count_exit):
     return posev_data
 
 
-def choice_setka_automat(fin, flag, count_exit):
+def _choice_setka_automat(fin, flag, count_exit):
     """автоматическая жеребьевка сетки, fin - финал, count_exit - сколько выходят в финал
     flag - флаг вида жеребьевки ручная или автомат""" 
     msgBox = QMessageBox 
@@ -9242,7 +9260,7 @@ def possible_draw_numbers(current_region_posev, reg_last, number_last, group_las
     titles = Title.get(Title.id == title_id())
     multi_reg = titles.multiregion
     #============
-    current_region = list(current_region_posev.values())
+    current_region = list(current_region_posev.values()) # список регионов и группы в предстоящем посеве
     y = 0
     for reg in current_region_posev.keys():
         cur_reg = current_region[y][0] # текущий регион посева
