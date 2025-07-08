@@ -304,18 +304,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._connectActions()
 
         self.menuBar()
+        font1 = QFont('Times New Roman', 12)
+        font1.setUnderline(True)
+        font2 = QFont('Times New Roman', 12)
+        font2.setUnderline(True)
         # centralWidget = QMainWindow()
         Button_turnir_1 = QPushButton("Proba", self) # (в каком виджете размещена)
-        Button_turnir_1.resize(40, 10) # размеры кнопки (длина 120, ширина 50)
-        Button_turnir_1.move(10, 5) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
-        font = QFont('Times New Roman', 8)
-        Button_turnir_1.setFont(font)
-        # Button_turnir_1.setText("Proba")
- 
-    
+        Button_turnir_1.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
+        Button_turnir_1.move(20, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+        Button_turnir_1.setFont(font1)
         Button_turnir_1.setFlat(True)
         Button_turnir_1.show()
-        # Button_turnir_1.clicked.connect(view)
+        Button_turnir_2 = QPushButton("Proba", self) # (в каком виджете размещена)
+        Button_turnir_2.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
+        Button_turnir_2.move(120, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+        Button_turnir_2.setFont(font2)
+        Button_turnir_2.setFlat(True)
+        Button_turnir_2.show()
+        Button_turnir_1.clicked.connect(self.fast_change_comp)
+        Button_turnir_2.clicked.connect(self.fast_change_comp)
 
         self.Button_title_made.setEnabled(False)
         self.Button_system_made.setEnabled(False)
@@ -347,6 +354,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tabWidget_2.setTabVisible(1, False)
         self.tabWidget_2.setTabVisible(2, False)
         self.tabWidget_2.setTabVisible(3, False)
+
     def closeEvent(self, event):
         # Создание бэкап DB при закрытии формы -main- по нажатию на крестик
         sender = my_win.sender()
@@ -681,6 +689,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         my_win.tabWidget.setCurrentIndex(0)
         db_r(gamer=gm)
         db_select_title()
+
+
+    def fast_change_comp(self):
+        """Быстрый переход между соревнованиями"""
+        pass
+
 
     def check_debitor_R(self):
         check_player_whitout_R()
@@ -1597,6 +1611,11 @@ my_win.comboBox_table_12.addItems(vid_setki_one_table)
 my_win.dateEdit_start.setDate(date.today())
 my_win.dateEdit_end.setDate(date.today())
 
+def button_comp_enabled():
+    """Включает кнопки быстрого перехода между соревнованиями"""
+    titles = Title.get(Title.id == title_id())
+    gamer = titles.gamer
+    
 
 def tab_enabled(id_title):
     """Включает вкладки в зависимости от создании системы и жеребьевки"""
