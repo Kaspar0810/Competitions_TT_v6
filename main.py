@@ -699,7 +699,44 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def fast_change_comp(self):
         """Быстрый переход между соревнованиями"""
-        pass
+        sender = my_win.sender()
+        button_list = [Button_turnir_1, Button_turnir_2, Button_turnir_3, Button_turnir_4]
+        font_und = QFont("DejaVuSans-Bold", 10)
+        font_und.setUnderline(True)
+        font_no_und = QFont("DejaVuSans-Bold", 10)
+        font_no_und.setUnderline(False)
+
+        for j in range(0, 4):
+            if sender == Button_turnir_1:
+                if j == 0:
+                    button_list[j].setFont(font_und)
+                    button_list[j].setFlat(True)
+                else:
+                    button_list[j].setFont(font_no_und)
+                    button_list[j].setFlat(False)
+            elif sender == Button_turnir_2:
+                if j == 1:
+                    button_list[j].setFont(font_und)
+                    button_list[j].setFlat(True)
+                else:
+                    button_list[j].setFont(font_no_und)
+                    button_list[j].setFlat(False)   
+            elif sender == Button_turnir_3:             
+                if j == 2:
+                    button_list[j].setFont(font_und)
+                    button_list[j].setFlat(True)
+                else:
+                    button_list[j].setFont(font_no_und)
+                    button_list[j].setFlat(False) 
+            elif sender == Button_turnir_4:
+                if j == 3:
+                    button_list[j].setFont(font_und)
+                    button_list[j].setFlat(True)
+                else:
+                    button_list[j].setFont(font_no_und)
+                    button_list[j].setFlat(False)
+
+
 
     def check_debitor_R(self):
         check_player_whitout_R()
@@ -1111,25 +1148,25 @@ font = QFont('Times New Roman', 10)
 # font3 = QFont('Times New Roman', 10)
 font4 = QFont('Times New Roman', 10)
 Button_turnir_1 = QPushButton("Proba", my_win) # (в каком виджете размещена)
-Button_turnir_1.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_1.resize(59, 20) # размеры кнопки (длина 120, ширина 50)
 Button_turnir_1.move(10, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
 Button_turnir_1.setFont(font)
 Button_turnir_1.setFlat(False)
 Button_turnir_1.show()
 Button_turnir_2 = QPushButton("Proba", my_win) # (в каком виджете размещена)
-Button_turnir_2.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_2.resize(59, 20) # размеры кнопки (длина 120, ширина 50)
 Button_turnir_2.move(70, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
 Button_turnir_2.setFont(font)
 Button_turnir_2.setFlat(False)
 Button_turnir_2.show()
 Button_turnir_3 = QPushButton("Proba", my_win) # (в каком виджете размещена)
-Button_turnir_3.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_3.resize(59, 20) # размеры кнопки (длина 120, ширина 50)
 Button_turnir_3.move(130, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
 Button_turnir_3.setFont(font)
 Button_turnir_3.setFlat(False)
 Button_turnir_3.show()
 Button_turnir_4 = QPushButton("Proba", my_win) # (в каком виджете размещена)
-Button_turnir_4.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_4.resize(59, 20) # размеры кнопки (длина 120, ширина 50)
 Button_turnir_4.move(190, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
 Button_turnir_4.setFont(font)
 Button_turnir_4.setFlat(False)
@@ -1723,7 +1760,7 @@ def tab_enabled(id_title):
             t = j.id
             g = j.gamer
             v = j.vozrast
-            button_list[d].setText(f'{g[:1]}-{v[2:]}')
+            button_list[d].setText(f'{g[:1]}{v[2:]}')
             if t == t_id:
                 button_list[d].setFont(font_und)
                 button_list[d].setFlat(True)
