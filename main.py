@@ -18,8 +18,8 @@ from datetime import *
 from PyQt5 import *
 from PyQt5.QtCore import QAbstractTableModel, QThread, pyqtSignal
 from PyQt5.QtGui import QIcon, QBrush, QColor, QFont, QPalette
-from PyQt5.QtWidgets import QPushButton, QRadioButton, QHeaderView, QComboBox, QListWidgetItem, QItemDelegate, QStyledItemDelegate
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QMenu, QInputDialog, QTableWidgetItem, QLineEdit, QLabel
+from PyQt5.QtWidgets import QPushButton, QRadioButton, QHeaderView, QComboBox, QListWidgetItem, QItemDelegate, QStyledItemDelegate, QFrame
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QMenu, QInputDialog, QTableWidgetItem, QLineEdit, QLabel, QGroupBox
 from PyQt5.QtWidgets import QAbstractItemView, QFileDialog, QProgressDialog, QAction, QDesktopWidget, QTableView, QColorDialog, QMessageBox
 from PyQt5 import QtGui, QtWidgets, QtCore
 
@@ -304,25 +304,32 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._connectActions()
 
         self.menuBar()
-        font1 = QFont('Times New Roman', 12)
-        font1.setUnderline(True)
-        font2 = QFont('Times New Roman', 12)
-        font2.setUnderline(True)
-        # centralWidget = QMainWindow()
-        Button_turnir_1 = QPushButton("Proba", self) # (в каком виджете размещена)
-        Button_turnir_1.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
-        Button_turnir_1.move(20, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
-        Button_turnir_1.setFont(font1)
-        Button_turnir_1.setFlat(True)
-        Button_turnir_1.show()
-        Button_turnir_2 = QPushButton("Proba", self) # (в каком виджете размещена)
-        Button_turnir_2.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
-        Button_turnir_2.move(120, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
-        Button_turnir_2.setFont(font2)
-        Button_turnir_2.setFlat(True)
-        Button_turnir_2.show()
-        Button_turnir_1.clicked.connect(self.fast_change_comp)
-        Button_turnir_2.clicked.connect(self.fast_change_comp)
+        # font1 = QFont('Times New Roman', 10)
+        # font1.setUnderline(True)
+        # font2 = QFont('Times New Roman', 10)
+        # font2.setUnderline(True)
+        
+        # frame_fast = QFrame(self)
+        # # frame_fast.setFont(QFont("Time New Roman-Italic", 10))
+        # frame_fast.move(10, 00) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+        # frame_fast.resize(240, 40) # размеры кнопки (длина 120, ширина 50)
+        # # frame_fast.setFlat(True)
+        # frame_fast.show()
+        # Button_turnir_1 = QPushButton(group_box)
+        # Button_turnir_1 = QPushButton("Proba", self) # (в каком виджете размещена)
+        # Button_turnir_1.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
+        # Button_turnir_1.move(20, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+        # Button_turnir_1.setFont(font1)
+        # Button_turnir_1.setFlat(True)
+        # Button_turnir_1.show()
+        # Button_turnir_2 = QPushButton("Proba", self) # (в каком виджете размещена)
+        # Button_turnir_2.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
+        # Button_turnir_2.move(120, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+        # Button_turnir_2.setFont(font2)
+        # Button_turnir_2.setFlat(True)
+        # Button_turnir_2.show()
+        # Button_turnir_1.clicked.connect(self.fast_change_comp)
+        # Button_turnir_2.clicked.connect(self.fast_change_comp)
 
         self.Button_title_made.setEnabled(False)
         self.Button_system_made.setEnabled(False)
@@ -690,11 +697,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         db_r(gamer=gm)
         db_select_title()
 
-
     def fast_change_comp(self):
         """Быстрый переход между соревнованиями"""
         pass
-
 
     def check_debitor_R(self):
         check_player_whitout_R()
@@ -809,7 +814,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """печать списка двойныъх фамилий"""
         double_family()
     
-
     def exit(self):
         flag = 0
         exit_comp(flag)
@@ -1051,7 +1055,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def vid_edit(self):
         change_page_vid()
 
-    
     def indent_edit(self):
         change_indent_page()
 
@@ -1102,6 +1105,48 @@ my_win.setWindowIcon(QIcon("CTT.png"))
 # my_win.resize(1390, 804)
 my_win.resize(1390, 780)
 my_win.center()
+
+font = QFont('Times New Roman', 10)
+# font2 = QFont('Times New Roman', 10)
+# font3 = QFont('Times New Roman', 10)
+font4 = QFont('Times New Roman', 10)
+Button_turnir_1 = QPushButton("Proba", my_win) # (в каком виджете размещена)
+Button_turnir_1.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_1.move(10, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+Button_turnir_1.setFont(font)
+Button_turnir_1.setFlat(False)
+Button_turnir_1.show()
+Button_turnir_2 = QPushButton("Proba", my_win) # (в каком виджете размещена)
+Button_turnir_2.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_2.move(70, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+Button_turnir_2.setFont(font)
+Button_turnir_2.setFlat(False)
+Button_turnir_2.show()
+Button_turnir_3 = QPushButton("Proba", my_win) # (в каком виджете размещена)
+Button_turnir_3.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_3.move(130, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+Button_turnir_3.setFont(font)
+Button_turnir_3.setFlat(False)
+Button_turnir_3.show()
+Button_turnir_4 = QPushButton("Proba", my_win) # (в каком виджете размещена)
+Button_turnir_4.resize(57, 20) # размеры кнопки (длина 120, ширина 50)
+Button_turnir_4.move(190, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
+Button_turnir_4.setFont(font)
+Button_turnir_4.setFlat(False)
+Button_turnir_4.show()
+
+Button_turnir_1.setEnabled(False)
+Button_turnir_2.setEnabled(False)
+Button_turnir_3.setEnabled(False)
+Button_turnir_4.setEnabled(False)
+Button_turnir_1.clicked.connect(my_win.fast_change_comp)
+Button_turnir_2.clicked.connect(my_win.fast_change_comp)
+Button_turnir_3.clicked.connect(my_win.fast_change_comp)
+Button_turnir_4.clicked.connect(my_win.fast_change_comp)
+
+        # self.Button_title_made.setEnabled(False)
+        # self.Button_system_made.setEnabled(False)
+
 
 def dolg_R():
     dolg_R_list = []
@@ -1177,6 +1222,7 @@ class StartWindow(QMainWindow, Ui_Form):
         tab_enabled(id_title)
         title_new = Title.select().where(Title.id == id_title).get()
         gamer = title_new.gamer
+        # date_comp = title_new.data_start
         self.close()
         if gamer in sex:
             my_win.setStyleSheet("#MainWindow{background-color:lightpink}")
@@ -1628,6 +1674,7 @@ def tab_enabled(id_title):
     tab_index = ["Титул", "Участники", "Система", "Результаты"]
     titles = Title.select().order_by(Title.id.desc())  # получает все title.id по убыванию
     title_new = Title.select().where(Title.id == id_title).get()
+    t_id = title_new.id
     vozrast = title_new.vozrast
     gamer = title_new.gamer
     name = title_new.name
@@ -1661,6 +1708,43 @@ def tab_enabled(id_title):
 
     if count_title > 1: # если соревнования не первые
         my_win.setWindowTitle(f"Соревнования по настольному теннису. {gamer} {vozrast}")
+        # ======================= вариант кнопки ===
+     # ==== вариант с кнопками быстрого переключения ====
+        sex = ["Девочки", "Девушки", "Юниорки", "Женщины"]
+        font_und = QFont("DejaVuSans-Bold", 10)
+        font_und.setUnderline(True)
+        font_no_und = QFont("DejaVuSans-Bold", 10)
+        font_no_und.setUnderline(False)
+        titles = Title.select().where(Title.data_start == date_comp) # кол-во соревноаний на однаковую дату
+        count_comp = len(titles)
+        d = 0
+        button_list = [Button_turnir_1, Button_turnir_2, Button_turnir_3, Button_turnir_4]
+        for j in titles:
+            t = j.id
+            g = j.gamer
+            v = j.vozrast
+            button_list[d].setText(f'{g[:1]}-{v[2:]}')
+            if t == t_id:
+                button_list[d].setFont(font_und)
+                button_list[d].setFlat(True)
+            d += 1
+
+        if count_comp == 1:
+            Button_turnir_1.setEnabled(False)
+            Button_turnir_2.setEnabled(False)
+            Button_turnir_3.setEnabled(False)
+            Button_turnir_4.setEnabled(False)
+        elif count_comp == 2:
+            Button_turnir_1.setEnabled(True)
+            Button_turnir_2.setEnabled(True)
+            Button_turnir_3.setEnabled(False)
+            Button_turnir_4.setEnabled(False)
+        elif count_comp == 4:
+            Button_turnir_1.setEnabled(True)
+            Button_turnir_2.setEnabled(True)
+            Button_turnir_3.setEnabled(True)
+            Button_turnir_4.setEnabled(True)
+
         # === new ===
         title_current = id_title
         tit_id = Title.get(Title.id == title_id_last) if title_current == title_id_current else Title.get(Title.id == title_id_current)
@@ -1758,21 +1842,14 @@ def enabled_menu_after_choice():
             my_win.ed_etap_Action.setEnabled(True)
         stage = k.stage
 
-        # for i in range(3):
-        #     my_win.tabWidget_stage.setTabEnabled(i, False) # выключает вкладки фильтров на вкладки -Результаты-
-
         if stage == "Одна таблица":
             my_win.choice_one_table_Action.setEnabled(True)
-            # my_win.tabWidget_stage.setTabEnabled(2, True) # включает вкладки фильтров на вкладки -Результаты-
         elif stage == "Предварительный":
             my_win.choice_gr_Action.setEnabled(True)
-            # my_win.tabWidget_stage.setTabEnabled(0, True) # включает вкладки фильтров на вкладки -Результаты-
         elif stage == "1-й полуфинал" or stage == "2-й полуфинал":
             my_win.choice_pf_Action.setEnabled(True)
-            # my_win.tabWidget_stage.setTabEnabled(1, True) # включает вкладки фильтров на вкладки -Результаты-
         else:
             my_win.choice_fin_Action.setEnabled(True)
-            # my_win.tabWidget_stage.setTabEnabled(2, True) # включает вкладки фильтров на вкладки -Результаты-
 
 
 def db_insert_title(title_str):
