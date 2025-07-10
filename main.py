@@ -304,32 +304,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._connectActions()
 
         self.menuBar()
-        # font1 = QFont('Times New Roman', 10)
-        # font1.setUnderline(True)
-        # font2 = QFont('Times New Roman', 10)
-        # font2.setUnderline(True)
-        
-        # frame_fast = QFrame(self)
-        # # frame_fast.setFont(QFont("Time New Roman-Italic", 10))
-        # frame_fast.move(10, 00) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
-        # frame_fast.resize(240, 40) # размеры кнопки (длина 120, ширина 50)
-        # # frame_fast.setFlat(True)
-        # frame_fast.show()
-        # Button_turnir_1 = QPushButton(group_box)
-        # Button_turnir_1 = QPushButton("Proba", self) # (в каком виджете размещена)
-        # Button_turnir_1.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
-        # Button_turnir_1.move(20, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
-        # Button_turnir_1.setFont(font1)
-        # Button_turnir_1.setFlat(True)
-        # Button_turnir_1.show()
-        # Button_turnir_2 = QPushButton("Proba", self) # (в каком виджете размещена)
-        # Button_turnir_2.resize(40, 20) # размеры кнопки (длина 120, ширина 50)
-        # Button_turnir_2.move(120, 30) # разммещение кнопки (от левого края 900, от верхнего 0) от виджета в котором размещен
-        # Button_turnir_2.setFont(font2)
-        # Button_turnir_2.setFlat(True)
-        # Button_turnir_2.show()
-        # Button_turnir_1.clicked.connect(self.fast_change_comp)
-        # Button_turnir_2.clicked.connect(self.fast_change_comp)
 
         self.Button_title_made.setEnabled(False)
         self.Button_system_made.setEnabled(False)
@@ -735,7 +709,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 else:
                     button_list[j].setFont(font_no_und)
                     button_list[j].setFlat(False)
-
+        button_comp_enabled()
 
 
     def check_debitor_R(self):
@@ -1142,10 +1116,8 @@ my_win.setWindowIcon(QIcon("CTT.png"))
 # my_win.resize(1390, 804)
 my_win.resize(1390, 780)
 my_win.center()
-
+# создание кнопок быстрого переключения между соревнованиями
 font = QFont('Times New Roman', 10)
-# font2 = QFont('Times New Roman', 10)
-# font3 = QFont('Times New Roman', 10)
 font4 = QFont('Times New Roman', 10)
 Button_turnir_1 = QPushButton("Proba", my_win) # (в каком виджете размещена)
 Button_turnir_1.resize(59, 20) # размеры кнопки (длина 120, ширина 50)
@@ -1180,9 +1152,6 @@ Button_turnir_1.clicked.connect(my_win.fast_change_comp)
 Button_turnir_2.clicked.connect(my_win.fast_change_comp)
 Button_turnir_3.clicked.connect(my_win.fast_change_comp)
 Button_turnir_4.clicked.connect(my_win.fast_change_comp)
-
-        # self.Button_title_made.setEnabled(False)
-        # self.Button_system_made.setEnabled(False)
 
 
 def dolg_R():
@@ -1694,11 +1663,50 @@ my_win.comboBox_table_12.addItems(vid_setki_one_table)
 my_win.dateEdit_start.setDate(date.today())
 my_win.dateEdit_end.setDate(date.today())
 
+
 def button_comp_enabled():
-    """Включает кнопки быстрого перехода между соревнованиями"""
-    titles = Title.get(Title.id == title_id())
+    """После нажатия кнопок быстрого перехода включает квладку наиболее необходимую"""
+    sender = my_win.sender()
+    sex = ["Девочки", "Девушки", "Юниорки", "Женщины"]
+    if sender == Button_turnir_1:
+        txt_button = Button_turnir_1.text()
+    elif sender == Button_turnir_2:
+        txt_button = Button_turnir_2.text()
+    elif sender == Button_turnir_3:
+        txt_button = Button_turnir_3.text()
+    elif sender == Button_turnir_4:
+        txt_button = Button_turnir_4.text()
+    id_dict = {}
+    button_list = [Button_turnir_1, Button_turnir_2, Button_turnir_3, Button_turnir_4]
+    t = Title.get(Title.id == title_id())
+    name_current = t.name # название текущих соревнований
+    date_current = t.data_start # начало текущих соревнований
+    titles = Title.select().where((Title.name == name_current) & (Title.data_start == date_current)) # кол-во соревнований на однаковую дату
+    d = 0
+    for j in titles:
+        id_tit = j.id
+        button_text = button_list[d].text()
+        id_dict[button_text] = id_tit
+        d += 1
+    id_comp = id_dict[txt_button] # id соревнований к котормы переходим
+    # ==== смена названия в меню -перейти к-
+    # t = Title.select().where(Title.id == title_id()).get()
+    full_name_current = t.full_name_comp # полное название текущих соревнований
+    age_current = t.vozrast
+    my_win.go_to_Action.setText(f"{full_name_current} {age_current}") # надпись на меню -перейти к- соревнования которые были
+
+    titles = Title.get(Title.id == id_comp) 
+    id_title = titles.id # id соревнования на которое переходим
     gamer = titles.gamer
-    
+    # смена цвета фона формы в зависимости от пола играющих
+    if gamer in sex:
+        my_win.setStyleSheet("#MainWindow{background-color:lightpink}")
+    else:
+        my_win.setStyleSheet("#MainWindow{background-color:lightblue}")
+    tab_enabled(id_title=id_comp)
+    go_to()
+  
+
 
 def tab_enabled(id_title):
     """Включает вкладки в зависимости от создании системы и жеребьевки"""
@@ -1709,7 +1717,8 @@ def tab_enabled(id_title):
 
     sender = my_win.sender()
     tab_index = ["Титул", "Участники", "Система", "Результаты"]
-    titles = Title.select().order_by(Title.id.desc())  # получает все title.id по убыванию
+    # titles = Title.select().order_by(Title.id.desc())
+    titles = Title.select()  # получает все title.id по убыванию
     title_new = Title.select().where(Title.id == id_title).get()
     t_id = title_new.id
     vozrast = title_new.vozrast
@@ -1719,6 +1728,29 @@ def tab_enabled(id_title):
     #=== сделать вариант с списком соревнований дев и юн
     n = 2
     t_name = titles.select().where((Title.name == name) & (Title.data_start == date_comp))
+    # ============ вариант два возраста с быстрым переходом =====
+    # for k in t_name:
+    #     title_list.append(k.id)
+    # # t_age = t_name.select().where(Title.vozrast == vozrast)
+    # # count = len(t_age)
+    # # if count == 2:
+    # #     for k in t_age:
+    # #         if n != 0:  
+    # #             if gamer == k.gamer:
+    # #                 title_list.insert(0, k.id)
+    # #             else:
+    # #                 title_list.insert(1, k.id)
+    # #             n -= 1
+    # #         else:
+    # #             break
+    # # else:
+    # #     for k in titles:
+    # #         if n != 0:  
+    # #             title_list.append(k.id)
+    # #             n -= 1
+    # #         else:
+    # #             break
+    # =================
     t_age = t_name.select().where(Title.vozrast == vozrast)
     count = len(t_age)
     if count == 2:
@@ -1752,7 +1784,7 @@ def tab_enabled(id_title):
         font_und.setUnderline(True)
         font_no_und = QFont("DejaVuSans-Bold", 10)
         font_no_und.setUnderline(False)
-        titles = Title.select().where(Title.data_start == date_comp) # кол-во соревноаний на однаковую дату
+        titles = Title.select().where(Title.data_start == date_comp) # кол-во соревнований на однаковую дату
         count_comp = len(titles)
         d = 0
         button_list = [Button_turnir_1, Button_turnir_2, Button_turnir_3, Button_turnir_4]
@@ -1943,7 +1975,7 @@ def go_to():
     """переход на предыдущие соревнования и обратно при нажатии меню -перейти к- или из меню -последние-"""
     sender = my_win.sender()
     sex = ["Девочки", "Девушки", "Юниорки", "Женщины"]
-
+    t = Title.select().where(Title.id == title_id()).get()
     if sender == fir_window.Button_open:
         full_name_with_age = fir_window.comboBox.currentText()
     elif sender == my_win.first_comp_Action:
@@ -1956,9 +1988,10 @@ def go_to():
         full_name_with_age = my_win.fourth_comp_Action.text()
     elif sender == my_win.go_to_Action:
         full_name_with_age = my_win.go_to_Action.text()  # полное название к которым переходим
+    
       # ==== смена названия в меню -перейти к-
     t = Title.select().where(Title.id == title_id()).get()
-    full_name_current = t.full_name_comp
+    full_name_current = t.full_name_comp # полное название текущих соревнований
     age_current = t.vozrast
     my_win.go_to_Action.setText(f"{full_name_current} {age_current}") # надпись на меню -перейти к- соревнования которые были
 
@@ -1978,7 +2011,7 @@ def go_to():
         my_win.setStyleSheet("#MainWindow{background-color:lightpink}")
     else:
         my_win.setStyleSheet("#MainWindow{background-color:lightblue}")
-        
+    # заполняет поля вкладки - титул-    
     my_win.lineEdit_title_nazvanie.setText(titles.name)
     my_win.lineEdit_title_vozrast.setText(titles.vozrast)
     my_win.dateEdit_start.setDate(titles.data_start)
@@ -1989,14 +2022,14 @@ def go_to():
     my_win.comboBox_secretary.setCurrentText(titles.secretary)
     my_win.comboBox_kategor_sec.setCurrentText(titles.kat_sec)
     my_win.lineEdit_title_gamer.setText(titles.gamer)
-    my_win.tabWidget.setCurrentIndex(0)  # открывает вкладку списки
+    my_win.tabWidget.setCurrentIndex(0)  # открывает вкладку титул
      #===== new
     tab_enabled(id_title)
     player_list = Player.select().where(Player.title_id == id_title)
     count_player = len(player_list)
     my_win.label_46.setText(f"Всего: {count_player} участников")
     
-    list_player_pdf(player_list)
+    # list_player_pdf(player_list)
     fir_window.load_old()
 
 
@@ -3039,19 +3072,6 @@ def add_player():
             Player.update(player=pl, bday=bd_new, rank=rn, city = ct, region = rg, razryad = rz,
                             full_name=fn, pay_rejting=pay_R, comment=comment, coach_id = idc, patronymic_id=idp).where(Player.id == pl_id).execute()
 
-            # with db:
-            #     plr =  player_list.select().where(Player.id == pl_id).get()
-            #     plr.player = pl                
-            #     bd_new = format_date_for_db(str_date=bd)
-            #     plr.bday = bd_new
-            #     plr.rank = rn
-            #     plr.city = ct
-            #     plr.region = rg
-            #     plr.razryad = rz
-            #     plr.full_name = fn
-            #     plr.pay_rejting = pay_R
-            #     plr.comment = comment
-            #     plr.save()
         elif txt == "Добавить":
             debt = "долг" if txt_edit == "Спортсмену необходимо оплатить рейтинг!" else ""
             # ==  перевод даты рождения в вид для db
