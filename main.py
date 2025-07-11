@@ -1665,9 +1665,10 @@ my_win.dateEdit_end.setDate(date.today())
 
 
 def button_comp_enabled():
-    """После нажатия кнопок быстрого перехода включает квладку наиболее необходимую"""
+    """После нажатия кнопок быстрого перехода включает вкладку наиболее необходимую"""
     sender = my_win.sender()
     sex = ["Девочки", "Девушки", "Юниорки", "Женщины"]
+    # ===== переключает вид кнопок =========
     if sender == Button_turnir_1:
         txt_button = Button_turnir_1.text()
     elif sender == Button_turnir_2:
@@ -1688,23 +1689,57 @@ def button_comp_enabled():
         button_text = button_list[d].text()
         id_dict[button_text] = id_tit
         d += 1
+
     id_comp = id_dict[txt_button] # id соревнований к котормы переходим
     # ==== смена названия в меню -перейти к-
-    # t = Title.select().where(Title.id == title_id()).get()
     full_name_current = t.full_name_comp # полное название текущих соревнований
     age_current = t.vozrast
     my_win.go_to_Action.setText(f"{full_name_current} {age_current}") # надпись на меню -перейти к- соревнования которые были
-
+    # ==== соревнования на которые переходим
     titles = Title.get(Title.id == id_comp) 
+    id_title = titles.id # id 
+    gamer = titles.gamer # пол 
+    vozrast = titles.vozrast # возраст 
+    full_name_with_age = f'{titles.full_name_comp} {vozrast}' # полное название и возраст
+    my_win.setWindowTitle(f"Соревнования по настольному теннису. {gamer} {vozrast}")    
+    # ========= окрывает соревнования, согласно нажатой кнопки
+    
+    mark = full_name_with_age.find("до") 
+    if mark > 0: 
+        full_name = full_name_with_age[:mark - 1] # название без возраста
+        age = full_name_with_age[mark:]# == возраст участников -до 
+    else:
+        full_name = full_name_with_age
+        age = ""
+
+    titles = Title.get((Title.full_name_comp == full_name) & (Title.vozrast == age)) 
     id_title = titles.id # id соревнования на которое переходим
     gamer = titles.gamer
+
+    # заполняет поля вкладки - титул-    
+    my_win.lineEdit_title_nazvanie.setText(titles.name)
+    my_win.lineEdit_title_vozrast.setText(titles.vozrast)
+    my_win.dateEdit_start.setDate(titles.data_start)
+    my_win.dateEdit_end.setDate(titles.data_end)
+    my_win.lineEdit_city_title.setText(titles.mesto)
+    my_win.comboBox_referee.setCurrentText(titles.referee)
+    my_win.comboBox_kategor_ref.setCurrentText(titles.kat_ref)
+    my_win.comboBox_secretary.setCurrentText(titles.secretary)
+    my_win.comboBox_kategor_sec.setCurrentText(titles.kat_sec)
+    my_win.lineEdit_title_gamer.setText(titles.gamer)
+    my_win.tabWidget.setCurrentIndex(0)  # открывает вкладку титул
+     #===== new
+    player_list = Player.select().where(Player.title_id == id_title)
+    count_player = len(player_list)
+    my_win.label_46.setText(f"Всего: {count_player} участников")
+    
+    # list_player_pdf(player_list)
+    fir_window.load_old()
     # смена цвета фона формы в зависимости от пола играющих
     if gamer in sex:
         my_win.setStyleSheet("#MainWindow{background-color:lightpink}")
     else:
         my_win.setStyleSheet("#MainWindow{background-color:lightblue}")
-    tab_enabled(id_title=id_comp)
-    go_to()
   
 
 
@@ -1717,7 +1752,6 @@ def tab_enabled(id_title):
 
     sender = my_win.sender()
     tab_index = ["Титул", "Участники", "Система", "Результаты"]
-    # titles = Title.select().order_by(Title.id.desc())
     titles = Title.select()  # получает все title.id по убыванию
     title_new = Title.select().where(Title.id == id_title).get()
     t_id = title_new.id
@@ -1728,29 +1762,7 @@ def tab_enabled(id_title):
     #=== сделать вариант с списком соревнований дев и юн
     n = 2
     t_name = titles.select().where((Title.name == name) & (Title.data_start == date_comp))
-    # ============ вариант два возраста с быстрым переходом =====
-    # for k in t_name:
-    #     title_list.append(k.id)
-    # # t_age = t_name.select().where(Title.vozrast == vozrast)
-    # # count = len(t_age)
-    # # if count == 2:
-    # #     for k in t_age:
-    # #         if n != 0:  
-    # #             if gamer == k.gamer:
-    # #                 title_list.insert(0, k.id)
-    # #             else:
-    # #                 title_list.insert(1, k.id)
-    # #             n -= 1
-    # #         else:
-    # #             break
-    # # else:
-    # #     for k in titles:
-    # #         if n != 0:  
-    # #             title_list.append(k.id)
-    # #             n -= 1
-    # #         else:
-    # #             break
-    # =================
+
     t_age = t_name.select().where(Title.vozrast == vozrast)
     count = len(t_age)
     if count == 2:
@@ -1986,9 +1998,9 @@ def go_to():
         full_name_with_age = my_win.third_comp_Action.text()
     elif sender == my_win.fourth_comp_Action:
         full_name_with_age = my_win.fourth_comp_Action.text()
-    elif sender == my_win.go_to_Action:
+    elif sender == my_win.go_to_Action: # == переход из меню перейти к
         full_name_with_age = my_win.go_to_Action.text()  # полное название к которым переходим
-    
+        button_comp_enabled()
       # ==== смена названия в меню -перейти к-
     t = Title.select().where(Title.id == title_id()).get()
     full_name_current = t.full_name_comp # полное название текущих соревнований
@@ -1997,8 +2009,8 @@ def go_to():
 
     mark = full_name_with_age.find("до") 
     if mark > 0: 
-        full_name = full_name_with_age[:mark - 1]
-        age = full_name_with_age[mark:]
+        full_name = full_name_with_age[:mark - 1] # название без возраста
+        age = full_name_with_age[mark:]# == возраст участников -до 
     else:
         full_name = full_name_with_age
         age = ""
